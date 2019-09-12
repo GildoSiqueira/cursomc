@@ -16,6 +16,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Produto implements Serializable {
@@ -23,9 +24,9 @@ public class Produto implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer Id;
+	private Integer id;
 	private String nome;
-	private double preco;
+	private Double preco;
 	
 	@JsonBackReference
 	@ManyToMany
@@ -36,34 +37,36 @@ public class Produto implements Serializable {
 		
 	private List<Categoria> categorias = new ArrayList<>();
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "id.produto")
-	private Set<ItemPedido> Itens = new HashSet<>();
+	private Set<ItemPedido> itens = new HashSet<>();
 	
 	public Produto() {
 	}
 
-	public Produto(Integer id, String nome, double preco) {
+	public Produto(Integer id, String nome, Double preco) {
 		super();
-		Id = id;
+		this.id = id;
 		this.nome = nome;
 		this.preco = preco;
 	}
 
+	@JsonIgnore	
 	public List<Pedido> getPedidos() {
 		List<Pedido> lista = new ArrayList<>();
 		
-		for (ItemPedido x : Itens) {
+		for (ItemPedido x : itens) {
 			lista.add(x.getPedido());
 		}
 		return lista;
 	}
 	
-	public Integer getId() {
-		return Id;
+	public Integer getid() {
+		return id;
 	}
 
-	public void setId(Integer id) {
-		Id = id;
+	public void setid(Integer id) {
+		this.id = id;
 	}
 
 	public String getNome() {
@@ -78,7 +81,7 @@ public class Produto implements Serializable {
 		return preco;
 	}
 
-	public void setPreco(double preco) {
+	public void setPreco(Double preco) {
 		this.preco = preco;
 	}
 
@@ -90,19 +93,19 @@ public class Produto implements Serializable {
 		this.categorias = categorias;
 	}
 
-	public Set<ItemPedido> getItens() {
-		return Itens;
+	public Set<ItemPedido> getitens() {
+		return itens;
 	}
 
-	public void setItens(Set<ItemPedido> itens) {
-		Itens = itens;
+	public void setitens(Set<ItemPedido> itens) {
+		this.itens = itens;
 	}
 	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((Id == null) ? 0 : Id.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
@@ -115,10 +118,10 @@ public class Produto implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Produto other = (Produto) obj;
-		if (Id == null) {
-			if (other.Id != null)
+		if (id == null) {
+			if (other.id != null)
 				return false;
-		} else if (!Id.equals(other.Id))
+		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}

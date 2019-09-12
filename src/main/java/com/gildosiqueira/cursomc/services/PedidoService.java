@@ -5,19 +5,19 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.gildosiqueira.cursomc.domain.Cliente;
-import com.gildosiqueira.cursomc.repositories.ClienteRepository;
+import com.gildosiqueira.cursomc.domain.Pedido;
+import com.gildosiqueira.cursomc.repositories.PedidoRepository;
 import com.gildosiqueira.cursomc.services.exception.ObjectNotFoundException;
 
 @Service
-public class ClienteService {
+public class PedidoService {
 
 	@Autowired
-	private ClienteRepository repo;
+	private PedidoRepository repo;
 
-	public Cliente buscar(Integer id) {
-		Optional<Cliente> obj = repo.findById(id);
+	public Pedido buscar(Integer id) {
+		Optional<Pedido> obj = repo.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
-			"O Objeto não foi encontrado! Id: "+ id + ", Tipo: " + Cliente.class.getName()));
+			"O Objeto não foi encontrado! Id: "+ id + ", Tipo: " + Pedido.class.getName()));
 	}
 }
