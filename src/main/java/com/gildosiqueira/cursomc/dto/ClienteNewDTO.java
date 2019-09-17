@@ -2,28 +2,53 @@ package com.gildosiqueira.cursomc.dto;
 
 import java.io.Serializable;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+
+import org.hibernate.validator.constraints.Length;
+
+import com.gildosiqueira.cursomc.services.validation.ClienteInsert;
+
+@ClienteInsert
 public class ClienteNewDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
+	@NotEmpty
+	@Length(min=5, max=120, message="O tamanho deve ser entre 5 e 120 caracteres")
 	private String nome;
+
+	@NotEmpty(message="Preenchimento obrigatório")
+	@Email(message="Email inválido")
 	private String email;
-	private String cpfOuCnpj;
+
+	@NotEmpty(message="Preenchimento obrigatório")
+	private String cpfOuCnpj; 
+	
 	private Integer tipo;
 	
+	@NotEmpty(message="Preenchimento obrigatório")
 	private String logadouro;
+	
+	@NotEmpty(message="Preenchimento obrigatório")
 	private String numero;
+	
 	private String complemento;
+	
+	@NotEmpty(message="Preenchimento obrigatório")
 	private String bairro;
+	
+	@NotEmpty(message="Preenchimento obrigatório")
 	private String cep;
 	
+	@NotEmpty(message="Preenchimento obrigatório")
 	private String telefone1;
+	
 	private String telefone2;
 	private String telefone3;
 	
 	private Integer cidadeID;
 	
-	public ClienteNewDTO() {
-		
+	public ClienteNewDTO() {		
 	}
 
 	public String getNome() {
@@ -129,5 +154,4 @@ public class ClienteNewDTO implements Serializable {
 	public void setCidadeID(Integer cidadeID) {
 		this.cidadeID = cidadeID;
 	}
-	
 }
