@@ -9,10 +9,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.gildosiqueira.cursomc.domain.Cidade;
 import com.gildosiqueira.cursomc.domain.Cliente;
+import com.gildosiqueira.cursomc.domain.Endereco;
+import com.gildosiqueira.cursomc.domain.enums.TipoCliente;
 import com.gildosiqueira.cursomc.dto.ClienteDTO;
+import com.gildosiqueira.cursomc.dto.ClienteNewDTO;
 import com.gildosiqueira.cursomc.repositories.ClienteRepository;
+import com.gildosiqueira.cursomc.repositories.EnderecoRepository;
 import com.gildosiqueira.cursomc.services.exception.DataIntegrityException;
 import com.gildosiqueira.cursomc.services.exception.ObjectNotFoundException;
 
@@ -21,11 +27,22 @@ public class ClienteService {
 
 	@Autowired
 	private ClienteRepository repo;
+	
+	@Autowired
+	private EnderecoRepository enderecoRepository;
 
 	public Cliente find(Integer id) {
 		Optional<Cliente> obj = repo.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 			"O Objeto não foi encontrado! Id: "+ id + ", Tipo: " + Cliente.class.getName()));
+	}
+	
+	@Transactional
+	public Cliente insert(Cliente obj) {
+		obj.setId(null);
+		obj = repo.save(obj);
+		enderecoRepository.saveAll(obj.getEnderecos());
+		return obj;
 	}
 	
 	public Cliente update(Cliente obj) {
@@ -51,6 +68,22 @@ public class ClienteService {
 	public Page<Cliente> findPage(Integer page, Integer linesPerPage, String orderBy, String direction){		
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
 		return repo.findAll(pageRequest);
+	}
+	
+	public Cliente fromDTO(ClienteNewDTO objDTO) {
+		Cliente cli = new Cliente(null, objDTO.getNome(), objDTO.getEmail(), objDTO.getCpfOuCnpj(), TipoCliente.toEnum(objDTO.getTipo()));
+		Cidade cid = new Cidade(objDTO.getCidadeID(), null, null); 
+		Endereco end = new Endereco(null, objDTO.getLogadouro(), objDTO.getNumero(), objDTO.getComplemento(), objDTO.getBairro(), objDTO.getCep(), cli, cid);
+		cli.getEnderecos().add(end);
+		cli.getTelefons().add(objDTO.getTelefone1());
+		
+		if (objDTO.getTelefone2() != null) {
+			cli.getTelefons().add(objDTO.getTelefone2());
+		}
+		if (objDTO.getTelefone3() != null) {
+			cli.getTelefons().add(objDTO.getTelefone3());
+		}
+		return cli;
 	}
 	
 	public Cliente fromDTO(ClienteDTO objDTO) {
