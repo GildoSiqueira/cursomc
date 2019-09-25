@@ -63,14 +63,12 @@ public class PedidoService {
 		
 		for (ItemPedido ip : obj.getItens()) {
 			ip.setDesconto(0.0);
-//			ip.setPreco(produtoService.find(ip.getProduto().getid()).getPreco());
 			ip.setProduto(produtoService.find(ip.getProduto().getid()));
 			ip.setPreco(ip.getProduto().getPreco());
-			ip.setPedido(obj);		
-			
+			ip.setPedido(obj);					
 		}
 		itemPedidoRepository.saveAll(obj.getItens());
-		emailService.sendOrderConfirmationEmail(obj);
+		emailService.sendOrderConfirmationHtmlEmail(obj);
 		return obj;
 	}
 }
